@@ -9,3 +9,5 @@ typechain-types
 cache
 artifacts
 
+# Ignoring flowchart source file
+Always Alive
