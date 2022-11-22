@@ -4,12 +4,16 @@
   "image": "",
   "attributes": [
     {
+      "trait_type": "kin",
+      "value": ""
+    },
+    {
       "trait_type": "paid",
       "value": false
     },
     {
-      "trait_type": "kin",
-      "value": true
+      "trait_type": "Next-kin",
+      "value": ""
     }
   ]
 }
