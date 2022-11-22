@@ -44,7 +44,7 @@ contract Register {
             "You have to send a minimum of 0.1 MATIC."
         );
 
-        // Calls a signing function [Signature]
+        // TODO: Calls a signing function [Signature]
 
         // Populates kinship
 
@@ -61,7 +61,6 @@ contract Register {
             kinship[msg.sender].maxNumberOfConfirmations = 5;
         }
 
-        // Pays for gas for paying kin [Gasless transaction]
         users.push(msg.sender);
 
         emit registered("Successfully registered", block.timestamp);
