@@ -106,12 +106,12 @@ contract Register {
         return kinship[_user].validationOfLife;
     }
 
-    function getKinAddress(address _user)
+    function getKinInfo(address _user)
         public
         view
         onlyUsers(_user)
-        returns (address)
+        returns (address, uint256)
     {
-        return kinship[_user].kinAddress;
+        return (kinship[_user].kinAddress, kinship[_user].kinAmount);
     }
 }

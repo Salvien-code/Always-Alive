@@ -17,5 +17,5 @@ interface register {
 
     function getValidationStatus(address _user) external view returns (bool);
 
-    function getKinAddress(address _user) external view returns (address);
+    function getKinInfo(address _user) external view returns (address, uint256);
 }
