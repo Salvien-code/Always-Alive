@@ -14,4 +14,8 @@ interface register {
         uint16 maxNumberOfConfirmations; // Sets the max number of times the user can validate life. Defaults to 5 if input exceeds 5
         uint16 currNumberOfConfirmations; // Will send kinAmount to kinAddress if this == maxNumberOfConfirmations
     }
+
+    function getValidationStatus(address _user) external view returns (bool);
+
+    function getKinAddress(address _user) external view returns (address);
 }

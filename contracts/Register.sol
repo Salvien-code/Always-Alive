@@ -29,6 +29,18 @@ contract Register {
         owner = msg.sender;
     }
 
+    modifier onlyUsers(address _user) {
+        bool found = false;
+
+        for (uint8 i = 0; i < users.length; i++) {
+            if (users[i] == _user) {
+                found = true;
+            }
+        }
+        require(found, "User is not registered!");
+        _;
+    }
+
     /**
      * @param _kinAddress Contract Address of the Next of Kin that receives the deposited tokens.
      * @param _interval Specifies the interval between each validation of life, (Month or Hourly).
@@ -67,7 +79,7 @@ contract Register {
         emit registered("Successfully registered", block.timestamp);
     }
 
-    function validateLife() public {
+    function validateLife() public onlyUsers(msg.sender) {
         kinship[msg.sender].currNumberOfConfirmations = 0;
         emit validatedLife(
             "Validated life and reset confirmations to 0",
@@ -75,7 +87,31 @@ contract Register {
         );
     }
 
-    function missedLifeValidation() public {
-        kinship[msg.sender].currNumberOfConfirmations++;
+    function missedLifeValidation(address _user) public onlyUsers(_user) {
+        kinship[_user].currNumberOfConfirmations++;
+        if (
+            kinship[_user].currNumberOfConfirmations ==
+            kinship[_user].maxNumberOfConfirmations
+        ) {
+            kinship[_user].validationOfLife = false;
+        }
+    }
+
+    function getValidationStatus(address _user)
+        public
+        view
+        onlyUsers(_user)
+        returns (bool)
+    {
+        return kinship[_user].validationOfLife;
+    }
+
+    function getKinAddress(address _user)
+        public
+        view
+        onlyUsers(_user)
+        returns (address)
+    {
+        return kinship[_user].kinAddress;
     }
 }
