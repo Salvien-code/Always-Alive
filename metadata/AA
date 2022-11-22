@@ -1,0 +1,19 @@
+{
+  "name": "Always Alive",
+  "description": "An NFT for tracking if the contract has paid out (Blessed) the kin.",
+  "image": "",
+  "attributes": [
+    {
+      "trait_type": "kin",
+      "value": ""
+    },
+    {
+      "trait_type": "paid",
+      "value": false
+    },
+    {
+      "trait_type": "Next-kin",
+      "value": ""
+    }
+  ]
+}

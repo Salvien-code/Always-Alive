@@ -29,9 +29,9 @@ contract Register {
     }
 
     /**
-     * @param _kinAddress: Contract Address of the Next of Kin that receives the deposited tokens.
-     * @param _interval: Specifies the interval between each validation of life, (Month or Hourly).
-     * @param _maxNumberOfConfirmations: Contract will transfer funds to kin if currNumberOfConfirmations == MaxNumberOfConfirmations.
+     * @param _kinAddress Contract Address of the Next of Kin that receives the deposited tokens.
+     * @param _interval Specifies the interval between each validation of life, (Month or Hourly).
+     * @param _maxNumberOfConfirmations Contract will transfer funds to kin if currNumberOfConfirmations == MaxNumberOfConfirmations.
      *
      */
     function register(
