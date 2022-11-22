@@ -23,6 +23,7 @@ contract Register {
     address[] public users;
 
     event registered(string message, uint256 when);
+    event validatedLife(string message, uint256 when);
 
     constructor() {
         owner = msg.sender;
@@ -64,5 +65,17 @@ contract Register {
         users.push(msg.sender);
 
         emit registered("Successfully registered", block.timestamp);
+    }
+
+    function validateLife() public {
+        kinship[msg.sender].currNumberOfConfirmations = 0;
+        emit validatedLife(
+            "Validated life and reset confirmations to 0",
+            block.timestamp
+        );
+    }
+
+    function missedLifeValidation() public {
+        kinship[msg.sender].currNumberOfConfirmations++;
     }
 }
