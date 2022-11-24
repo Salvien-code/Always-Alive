@@ -11,12 +11,14 @@ import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
     uint256 private lastHourStamp;
     uint256 private lastDayStamp;
+    uint256 private lastWeekStamp;
 
     uint256 public MIN_AMOUNT = 0.001 ether;
     uint8 public MAX_NUMBER_OF_CONFIRMATIONS = 5;
 
     uint16 private HOURLY_INTERVAL = 60 * 60;
-    uint32 private DAILY_INTERVAL = 24 * 60 * 60;
+    uint32 private DAILY_INTERVAL = 24 * HOURLY_INTERVAL;
+    uint64 private WEEKLY_INTERVAL = 7 * DAILY_INTERVAL;
 
     mapping(uint256 => RequestStatus) public requests;
     VRFCoordinatorV2Interface COORDINATOR;
@@ -36,7 +38,7 @@ contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
     uint32 numWords = 10;
 
     struct Kin {
-        address kinAddress;
+        address payable kinAddress;
         uint256 kinAmount;
         bool paidKin;
         bool validationOfLife;
@@ -72,6 +74,7 @@ contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
     {
         lastHourStamp = block.timestamp;
         lastDayStamp = block.timestamp;
+        lastWeekStamp = block.timestamp;
 
         COORDINATOR = VRFCoordinatorV2Interface(
             0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed
@@ -114,7 +117,7 @@ contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
     /**
      * @param _kinAddress The address of the kin that the contract pays deposited funds to.
      */
-    function register(address _kinAddress)
+    function register(address payable _kinAddress)
         public
         payable
         canRegisterOnlyOnce(msg.sender)
@@ -137,10 +140,10 @@ contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
     }
 
     // =====    INVESTMENT SECTION     =====
-    function invest() public {
+    function invest() public view {
         require(
-            (block.timestamp - lastDayStamp) > DAILY_INTERVAL,
-            "Not up to a Day!"
+            (block.timestamp - lastWeekStamp) > WEEKLY_INTERVAL,
+            "Not up to a Week!"
         );
 
         // Sends balance to AAVE and collects profit for the day.
@@ -154,13 +157,14 @@ contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
         );
         for (uint8 i = 0; i < users.length; i++) {
             if (
-                kinship[users[i]].validationOfLife == true &&
+                kinship[users[i]].validationOfLife == false &&
                 kinship[users[i]].paidKin == false
             ) {
                 (bool sent, ) = kinship[users[i]].kinAddress.call{
                     value: kinship[users[i]].kinAmount
                 }("");
                 require(sent, "Failed to send blessings.");
+                kinship[users[i]].paidKin = true;
             }
         }
     }

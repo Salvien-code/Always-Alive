@@ -3,11 +3,13 @@ import { setTimeout } from "timers/promises";
 
 async function main() {
   const initialDeposit = ethers.utils.parseEther("0.001");
+  const gasLimit = ethers.utils.parseEther("0.1");
   const subscriptionID = 2710;
 
   const AlwaysAlive = await ethers.getContractFactory("AlwaysAlive");
   const alwaysAlive = await AlwaysAlive.deploy(subscriptionID, {
     value: initialDeposit,
+    gasLimit: gasLimit,
   });
 
   await alwaysAlive.deployed();
