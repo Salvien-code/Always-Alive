@@ -1,10 +1,10 @@
 import { ethers, run } from "hardhat";
-
 import { setTimeout } from "timers/promises";
 
 async function main() {
+  const initialDeposit = ethers.utils.parseEther("0.001");
   const AlwaysAlive = await ethers.getContractFactory("AlwaysAlive");
-  const alwaysAlive = await AlwaysAlive.deploy();
+  const alwaysAlive = await AlwaysAlive.deploy({ value: initialDeposit });
 
   await alwaysAlive.deployed();
 
