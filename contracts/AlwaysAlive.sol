@@ -64,6 +64,15 @@ contract AlwaysAlive {
         _;
     }
 
+    modifier kinMustBeAnEOA(address _kin) {
+        uint size;
+        assembly {
+            size := extcodesize(_kin)
+        }
+        require(size == 0, "Kin Address cannot be a smart contract!");
+        _;
+    }
+
     // =====    REGISTRATION SECTION   =====
     /**
      * @param _kinAddress The address of the kin that the contract pays deposited funds to.
@@ -72,6 +81,7 @@ contract AlwaysAlive {
         public
         payable
         canRegisterOnlyOnce(msg.sender)
+        kinMustBeAnEOA(_kinAddress)
     {
         require(msg.value >= MIN_AMOUNT, "Minimum Registration is 0.1 MATIC");
 
