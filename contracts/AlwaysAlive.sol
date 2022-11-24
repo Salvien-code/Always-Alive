@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+
 /**
  * @author Simon Samuel
  */
-contract AlwaysAlive {
-    address public owner;
+contract AlwaysAlive is VRFConsumerBaseV2, ConfirmedOwner {
     uint256 private lastHourStamp;
     uint256 private lastDayStamp;
 
@@ -15,15 +18,37 @@ contract AlwaysAlive {
     uint16 private HOURLY_INTERVAL = 60 * 60;
     uint32 private DAILY_INTERVAL = 24 * 60 * 60;
 
-    struct kin {
+    mapping(uint256 => RequestStatus) public requests;
+    VRFCoordinatorV2Interface COORDINATOR;
+
+    uint64 subscriptionId;
+
+    uint256[] public requestIds;
+    uint256 public lastRequestId;
+
+    bytes32 keyHash =
+        0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f;
+
+    uint32 callbackGasLimit = 100000;
+
+    uint16 requestConfirmations = 3;
+
+    uint32 numWords = 10;
+
+    struct Kin {
         address kinAddress;
         uint256 kinAmount;
         bool paidKin;
         bool validationOfLife;
         uint8 currNumberOfConfirmations;
     }
+    struct RequestStatus {
+        bool fulfilled;
+        bool exists;
+        uint256[] randomWords;
+    }
 
-    mapping(address => kin) kinship;
+    mapping(address => Kin) kinship;
     address[] public users;
 
     // Core Events
@@ -36,10 +61,22 @@ contract AlwaysAlive {
     event paidDailyProfits(string message, address kin, uint256 when);
     event deposited(string message, address payer, uint256 amount);
 
-    constructor() payable {
-        owner = msg.sender;
+    // Chainlink Events
+    event RequestSent(uint256 requestId, uint32 numWords);
+    event RequestFulfilled(uint256 requestId, uint256[] randomWords);
+
+    constructor(uint64 _subscriptionId)
+        payable
+        VRFConsumerBaseV2(0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed)
+        ConfirmedOwner(msg.sender)
+    {
         lastHourStamp = block.timestamp;
         lastDayStamp = block.timestamp;
+
+        COORDINATOR = VRFCoordinatorV2Interface(
+            0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed
+        );
+        subscriptionId = _subscriptionId;
     }
 
     modifier onlyUsers(address _user) {
@@ -168,6 +205,51 @@ contract AlwaysAlive {
         returns (uint8)
     {
         return kinship[_user].currNumberOfConfirmations;
+    }
+
+    function requestRandomWords()
+        external
+        onlyOwner
+        returns (uint256 requestId)
+    {
+        requestId = COORDINATOR.requestRandomWords(
+            keyHash,
+            subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            numWords
+        );
+        requests[requestId] = RequestStatus({
+            randomWords: new uint256[](0),
+            exists: true,
+            fulfilled: false
+        });
+        requestIds.push(requestId);
+        lastRequestId = requestId;
+        emit RequestSent(requestId, numWords);
+        return requestId;
+    }
+
+    function fulfillRandomWords(
+        uint256 _requestId,
+        uint256[] memory _randomWords
+    ) internal override {
+        require(requests[_requestId].exists, "request not found");
+        requests[_requestId].fulfilled = true;
+        requests[_requestId].randomWords = _randomWords;
+        emit RequestFulfilled(_requestId, _randomWords);
+
+        // Section for paying random kin profit
+    }
+
+    function getRequestStatus(uint256 _requestId)
+        external
+        view
+        returns (bool fulfilled, uint256[] memory randomWords)
+    {
+        require(requests[_requestId].exists, "request not found");
+        RequestStatus memory request = requests[_requestId];
+        return (request.fulfilled, request.randomWords);
     }
 
     receive() external payable {
