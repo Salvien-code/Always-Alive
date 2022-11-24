@@ -1,22 +1,23 @@
-import { ethers } from "hardhat";
+import { ethers, run } from "hardhat";
+
+import { setTimeout } from "timers/promises";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const AlwaysAlive = await ethers.getContractFactory("AlwaysAlive");
+  const alwaysAlive = await AlwaysAlive.deploy();
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  await alwaysAlive.deployed();
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  console.log(`Contract deployed to ${alwaysAlive.address}\n`);
 
-  await lock.deployed();
-
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+  console.log(`Waiting for a minute before verifying`);
+  await setTimeout(60000);
+  await run("verify:verify", {
+    address: alwaysAlive.address,
+  });
+  console.log(`Verified contract on PolygonScan`);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

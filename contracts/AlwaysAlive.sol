@@ -17,17 +17,22 @@ contract AlwaysAlive {
     struct kin {
         address kinAddress;
         uint256 kinAmount;
+        bool paidKin;
         bool validationOfLife;
         uint8 currNumberOfConfirmations;
     }
 
     mapping(address => kin) kinship;
-    address[] public activeUsers;
-    address[] public nullUsers;
+    address[] public users;
 
+    // Core Events
     event registered(string message, address user, uint256 when);
     event invested(string message, address kin, uint256 when);
     event blessed(string message, address kin, uint256 when);
+
+    // Timed Events
+    event incrementedConfirmations(string message, uint256 when);
+    event paidDailyProfits(string message, address kin, uint256 when);
 
     constructor() payable {
         owner = msg.sender;
@@ -35,17 +40,9 @@ contract AlwaysAlive {
     }
 
     modifier onlyUsers(address _user) {
-        bool notNullUser = false;
-        for (uint8 i = 0; i < nullUsers.length; i++) {
-            if (nullUsers[i] == _user) {
-                notNullUser = true;
-            }
-        }
-        require(!notNullUser, "User cannot register twice!");
-
         bool activeUser = false;
-        for (uint8 i = 0; i < activeUsers.length; i++) {
-            if (activeUsers[i] == _user) {
+        for (uint8 i = 0; i < users.length; i++) {
+            if (users[i] == _user) {
                 activeUser = true;
             }
         }
@@ -53,19 +50,35 @@ contract AlwaysAlive {
         _;
     }
 
+    modifier canRegisterOnlyOnce(address _user) {
+        bool alreadyRegistered = false;
+        for (uint8 i = 0; i < users.length; i++) {
+            if (users[i] == _user) {
+                alreadyRegistered = true;
+            }
+        }
+        require(!alreadyRegistered, "User is already registered!");
+        _;
+    }
+
     // =====    REGISTRATION SECTION   =====
     /**
      * @param _kinAddress The address of the kin that the contract pays deposited funds to.
      */
-    function register(address _kinAddress) public payable {
+    function register(address _kinAddress)
+        public
+        payable
+        canRegisterOnlyOnce(msg.sender)
+    {
         require(msg.value >= MIN_AMOUNT, "Minimum Registration is 0.1 MATIC");
 
         kinship[msg.sender].currNumberOfConfirmations = 0;
         kinship[msg.sender].kinAddress = _kinAddress;
+        kinship[msg.sender].paidKin = false;
         kinship[msg.sender].validationOfLife = true;
         kinship[msg.sender].kinAmount = msg.value;
 
-        activeUsers.push(msg.sender);
+        users.push(msg.sender);
         emit registered(
             "Successfully registered for Always Alive Contract",
             msg.sender,
@@ -80,4 +93,35 @@ contract AlwaysAlive {
     function bless() public {}
 
     // =====    HELPERS SECTION        =====
+    function validateLife() public onlyUsers(msg.sender) {
+        kinship[msg.sender].currNumberOfConfirmations = 0;
+    }
+
+    function incrementConfirmations() public {
+        require(
+            (block.timestamp - lastTimeStamp) > HOURLY_INTERVAL,
+            "Not up to an hour!"
+        );
+
+        lastTimeStamp = block.timestamp;
+
+        for (uint8 i = 0; i < users.length; i++) {
+            kinship[users[i]].currNumberOfConfirmations++;
+            if (
+                kinship[users[i]].currNumberOfConfirmations >
+                MAX_NUMBER_OF_CONFIRMATIONS
+            ) {
+                kinship[users[i]].validationOfLife = false;
+            }
+        }
+    }
+
+    function getCurrentConfirmations(address _user)
+        public
+        view
+        onlyUsers(_user)
+        returns (uint8)
+    {
+        return kinship[_user].currNumberOfConfirmations;
+    }
 }
