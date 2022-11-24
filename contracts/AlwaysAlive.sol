@@ -6,7 +6,8 @@ pragma solidity ^0.8.0;
  */
 contract AlwaysAlive {
     address public owner;
-    uint256 public lastTimeStamp;
+    uint256 private lastHourStamp;
+    uint256 private lastDayStamp;
 
     uint256 public MIN_AMOUNT = 0.001 ether;
     uint8 public MAX_NUMBER_OF_CONFIRMATIONS = 5;
@@ -33,10 +34,12 @@ contract AlwaysAlive {
     // Timed Events
     event incrementedConfirmations(string message, uint256 when);
     event paidDailyProfits(string message, address kin, uint256 when);
+    event deposited(string message, address payer, uint256 amount);
 
     constructor() payable {
         owner = msg.sender;
-        lastTimeStamp = block.timestamp;
+        lastHourStamp = block.timestamp;
+        lastDayStamp = block.timestamp;
     }
 
     modifier onlyUsers(address _user) {
@@ -87,23 +90,50 @@ contract AlwaysAlive {
     }
 
     // =====    INVESTMENT SECTION     =====
-    function invest() public {}
+    function invest() public {
+        require(
+            (block.timestamp - lastDayStamp) > DAILY_INTERVAL,
+            "Not up to a Day!"
+        );
+
+        // Sends balance to AAVE and collects profit for the day.
+    }
 
     // =====    BLESSING SECTION       =====
-    function bless() public {}
+    function bless() public {
+        require(
+            (block.timestamp - lastDayStamp) > DAILY_INTERVAL,
+            "Not up to a Day!"
+        );
+        for (uint8 i = 0; i < users.length; i++) {
+            if (
+                kinship[users[i]].validationOfLife == true &&
+                kinship[users[i]].paidKin == false
+            ) {
+                (bool sent, ) = kinship[users[i]].kinAddress.call{
+                    value: kinship[users[i]].kinAmount
+                }("");
+                require(sent, "Failed to send blessings.");
+            }
+        }
+    }
 
     // =====    HELPERS SECTION        =====
     function validateLife() public onlyUsers(msg.sender) {
         kinship[msg.sender].currNumberOfConfirmations = 0;
     }
 
+    function deposit() public payable {
+        emit deposited("Recieved some MATIC", msg.sender, msg.value);
+    }
+
     function incrementConfirmations() public {
         require(
-            (block.timestamp - lastTimeStamp) > HOURLY_INTERVAL,
+            (block.timestamp - lastHourStamp) > HOURLY_INTERVAL,
             "Not up to an hour!"
         );
 
-        lastTimeStamp = block.timestamp;
+        lastHourStamp = block.timestamp;
 
         for (uint8 i = 0; i < users.length; i++) {
             kinship[users[i]].currNumberOfConfirmations++;
@@ -114,6 +144,11 @@ contract AlwaysAlive {
                 kinship[users[i]].validationOfLife = false;
             }
         }
+
+        emit incrementedConfirmations(
+            "Incremented confirmations for all users",
+            block.timestamp
+        );
     }
 
     function getCurrentConfirmations(address _user)
@@ -123,5 +158,13 @@ contract AlwaysAlive {
         returns (uint8)
     {
         return kinship[_user].currNumberOfConfirmations;
+    }
+
+    receive() external payable {
+        emit deposited("Received some MATIC", msg.sender, msg.value);
+    }
+
+    fallback() external payable {
+        emit deposited("Received some MATIC", msg.sender, msg.value);
     }
 }
