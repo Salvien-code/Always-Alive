@@ -7,6 +7,7 @@ async function main() {
   const AlwayAliveFactory = await ethers.getContractFactory("AlwaysAlive");
   const alwaysAliveContract = await AlwayAliveFactory.deploy({
     value: initialDeposit,
+    gasLimit: 300000,
   });
   await alwaysAliveContract.deployed();
 

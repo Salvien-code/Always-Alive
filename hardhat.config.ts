@@ -1,4 +1,5 @@
 import { HardhatUserConfig } from "hardhat/config";
+import { NetworkConfig } from "hardhat/types";
 import "@nomicfoundation/hardhat-toolbox";
 import "dotenv/config";
 
@@ -9,7 +10,11 @@ const config: HardhatUserConfig = {
   solidity: "0.8.17",
   defaultNetwork: "mumbai",
   networks: {
-    mumbai: { url: ALCHEMY_API_URL, accounts: [METAMASK_PRIVATE_KEY!] },
+    mumbai: {
+      url: ALCHEMY_API_URL,
+      accounts: [METAMASK_PRIVATE_KEY!],
+      allowUnlimitedContractSize: true,
+    },
   },
   paths: {
     artifacts: "./client/artifacts",

@@ -172,11 +172,11 @@ contract AlwaysAlive {
         return kinship[_user].currNumberOfConfirmations;
     }
 
-    // receive() external payable {
-    //     emit deposited("Received some MATIC", msg.sender, msg.value);
-    // }
+    receive() external payable {
+        emit deposited("Received some MATIC", msg.sender, msg.value);
+    }
 
-    // fallback() external payable {
-    //     emit deposited("Received some MATIC", msg.sender, msg.value);
-    // }
+    fallback() external payable {
+        emit deposited("Received some MATIC", msg.sender, msg.value);
+    }
 }
