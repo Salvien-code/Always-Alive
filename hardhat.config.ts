@@ -7,7 +7,16 @@ const { ALCHEMY_API_URL, METAMASK_PRIVATE_KEY, POLYGONSCAN_API_KEY } =
   process.env;
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.17",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.17",
+      },
+      {
+        version: "0.8.10",
+      },
+    ],
+  },
   defaultNetwork: "mumbai",
   networks: {
     mumbai: {
