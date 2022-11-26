@@ -92,7 +92,7 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@coinbase/wallet-sdk@^3.5.3":
+"@coinbase/wallet-sdk@^3.5.3", "@coinbase/wallet-sdk@^3.6.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.6.0.tgz#52cc01d6721b171b69f8c4a83ef5029e52d997d4"
   integrity sha512-p7RHnbhWiwVr9viX9Z5KLxKgzGoJRKcAN/BYRTsodnesgA7y+omangXncsxY+5eyQSflEL7Dqs0dv/yeDsomow==
