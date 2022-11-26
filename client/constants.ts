@@ -1,4 +1,4 @@
-import alwaysAliveData from "./artifacts/contracts/AlwaysAlive.sol/AlwaysAlive.json";
+import alwaysAliveData from "./contract-artifacts/contracts/AlwaysAlive.sol/AlwaysAlive.json";
 
 export const PAID_NFT_URL =
   "https://bafkreiejj34bgkxeo4kmamoeyjxoclmimzosnmk3nlvz2laqwmyw5seutu.ipfs.nftstorage.link/";
