@@ -13,8 +13,8 @@ contract AlwaysAlive {
     uint8 public MAX_NUMBER_OF_CONFIRMATIONS = 5;
 
     uint16 private HOURLY_INTERVAL = 60 * 60;
-    uint32 private DAILY_INTERVAL = 24 * HOURLY_INTERVAL;
-    uint64 private WEEKLY_INTERVAL = 7 * DAILY_INTERVAL;
+    uint32 private DAILY_INTERVAL = 24 * 60 * 60;
+    uint64 private WEEKLY_INTERVAL = 7 * 24 * 60 * 60;
 
     struct Kin {
         address payable kinAddress;
@@ -28,14 +28,14 @@ contract AlwaysAlive {
     address[] public users;
 
     // Core Events
-    event registered(string message, address user, uint256 when);
-    event invested(string message, address kin, uint256 when);
-    event blessed(string message, address kin, uint256 when);
+    event registered(address user, uint256 when);
+    event invested(address kin, uint256 when);
+    event blessed(address kin, uint256 when);
 
     // Timed Events
-    event incrementedConfirmations(string message, uint256 when);
-    event paidDailyProfits(string message, address kin, uint256 when);
-    event deposited(string message, address payer, uint256 amount);
+    event incrementedConfirmations(uint256 when);
+    event paidDailyProfits(address kin, uint256 when);
+    event deposited(address payer, uint256 amount);
 
     constructor() payable {
         lastHourStamp = block.timestamp;
@@ -61,7 +61,7 @@ contract AlwaysAlive {
                 alreadyRegistered = true;
             }
         }
-        require(!alreadyRegistered, "User is already registered!");
+        require(!alreadyRegistered, "Already registered!");
         _;
     }
 
@@ -84,7 +84,7 @@ contract AlwaysAlive {
         canRegisterOnlyOnce(msg.sender)
         kinMustBeAnEOA(_kinAddress)
     {
-        require(msg.value >= MIN_AMOUNT, "Minimum Registration is 0.1 MATIC");
+        require(msg.value >= MIN_AMOUNT, "Minimum Registration is 0.001 MATIC");
 
         kinship[msg.sender].currNumberOfConfirmations = 0;
         kinship[msg.sender].kinAddress = _kinAddress;
@@ -93,11 +93,7 @@ contract AlwaysAlive {
         kinship[msg.sender].kinAmount = msg.value;
 
         users.push(msg.sender);
-        emit registered(
-            "Successfully registered for Always Alive Contract",
-            msg.sender,
-            block.timestamp
-        );
+        emit registered(msg.sender, block.timestamp);
     }
 
     // =====    INVESTMENT SECTION     =====
@@ -136,7 +132,7 @@ contract AlwaysAlive {
     }
 
     function deposit() public payable {
-        emit deposited("Recieved some MATIC", msg.sender, msg.value);
+        emit deposited(msg.sender, msg.value);
     }
 
     function incrementConfirmations() public {
@@ -157,10 +153,7 @@ contract AlwaysAlive {
             }
         }
 
-        emit incrementedConfirmations(
-            "Incremented confirmations for all users",
-            block.timestamp
-        );
+        emit incrementedConfirmations(block.timestamp);
     }
 
     function getCurrentConfirmations(address _user)
@@ -173,10 +166,10 @@ contract AlwaysAlive {
     }
 
     receive() external payable {
-        emit deposited("Received some MATIC", msg.sender, msg.value);
+        emit deposited(msg.sender, msg.value);
     }
 
     fallback() external payable {
-        emit deposited("Received some MATIC", msg.sender, msg.value);
+        emit deposited(msg.sender, msg.value);
     }
 }
