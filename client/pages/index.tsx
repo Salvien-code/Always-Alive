@@ -19,26 +19,37 @@ export default function Home() {
           width={300}
           src="/Always_Alive_Logo.svg"
           alt="Always Alive Logo"
-        ></Image>
+        ></Image>{" "}
+        <h1 className={styles.title}>Always Alive</h1>
         <ConnectButton />
       </header>
       <main className={styles.main}>
-        <h1 className={styles.title}>Always Alive</h1>
-
         <p className={styles.description}>
           A Truly Decentralized Medium to send Funds to your Next of Kin.
         </p>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
+          <div className={styles.card}>
+            <h2>Register &rarr;</h2>
             <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          </div>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+          <div className={styles.card}>
+            <h2>Validate Life &rarr;</h2>
+            <p>Hit the validate button before your Confirmations hit 5!</p>
+
+            <h2>Get Current Confirmations</h2>
+            <p>
+              You&apos;re currently at {} Confirmations, click ValidateLife to
+              take it back to zero!
+            </p>
+          </div>
+          <div className={styles.card}>
+            <h2>Blessed Kin</h2>
+            <p>
+              The protocol paid the earnings of last week {} to {}.
+            </p>
+          </div>
         </div>
       </main>
 

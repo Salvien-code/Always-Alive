@@ -1,3 +1,10 @@
+/* CSS HEX
+--black: #000000ff;
+--blue-crayola: #0070f3ff;
+--french-sky-blue: #85beffff;
+--platinum: #eaeaeaff;
+--white: #fafafaff; */
+
 .container {
   padding: 0 2rem;
 }
@@ -13,10 +20,11 @@
 }
 
 .header {
-  max-height: 15vh;
-  margin: 0%;
+  /* background-color: #eaeaeaff; */
+  max-height: 20vh;
+  margin-top: 5px;
   display: flex;
-  padding: 2rem 0;
+  padding: 1rem 1rem;
   align-items: center;
   justify-content: space-between;
 }
@@ -94,7 +102,7 @@
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  max-width: 30vw;
+  max-width: 20vw;
 }
 
 .card:hover,
@@ -135,4 +143,7 @@
   .code {
     background: #111;
   }
+  /* .header {
+    background-color: #85beffff;
+  } */
 }
