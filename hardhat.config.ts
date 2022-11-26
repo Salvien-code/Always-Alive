@@ -17,7 +17,7 @@ const config: HardhatUserConfig = {
     },
   },
   paths: {
-    artifacts: "./client/artifacts",
+    artifacts: "./client/contract-artifacts",
   },
   etherscan: {
     apiKey: POLYGONSCAN_API_KEY,
