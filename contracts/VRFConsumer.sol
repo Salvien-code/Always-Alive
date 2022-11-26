@@ -18,11 +18,11 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
     bytes32 keyHash =
         0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f;
 
-    uint32 callbackGasLimit = 100000;
+    uint32 callbackGasLimit = 2_000_000;
 
     uint16 requestConfirmations = 3;
 
-    uint32 numWords = 10;
+    uint32 numWords = 3;
 
     struct RequestStatus {
         bool fulfilled;
