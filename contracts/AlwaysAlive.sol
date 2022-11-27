@@ -5,6 +5,8 @@ pragma solidity ^0.8.0;
  * @author Simon Samuel
  */
 contract AlwaysAlive {
+    address public lastInvestedKin;
+
     uint256 private lastHourStamp;
     uint256 private lastDayStamp;
     uint256 private lastWeekStamp;
@@ -122,6 +124,8 @@ contract AlwaysAlive {
                 }("");
                 require(sent, "Failed to send blessings.");
                 kinship[users[i]].paidKin = true;
+
+                emit blessed(kinship[users[i]].kinAddress, block.timestamp);
             }
         }
     }
@@ -144,7 +148,10 @@ contract AlwaysAlive {
         lastHourStamp = block.timestamp;
 
         for (uint8 i = 0; i < users.length; i++) {
-            kinship[users[i]].currNumberOfConfirmations++;
+            if (kinship[users[i]].validationOfLife) {
+                kinship[users[i]].currNumberOfConfirmations++;
+            }
+
             if (
                 kinship[users[i]].currNumberOfConfirmations >
                 MAX_NUMBER_OF_CONFIRMATIONS

@@ -10,8 +10,8 @@ contract YieldAggregator {
     using SafeERC20 for IERC20;
 
     IPoolAddressesProvider poolAddressProvider =
-        IPoolAddressesProvider(0x178113104fEcbcD7fF8669a0150721e231F0FD4B);
-    address poolAddress = poolAddressProvider.getPool();
+        IPoolAddressesProvider(0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6);
+    address public poolAddress = poolAddressProvider.getPool();
     IPool pool = IPool(poolAddress);
 
     address owner;
