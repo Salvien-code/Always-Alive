@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./YieldAggregator.sol";
+import "./VRFConsumer.sol";
+
 /**
  * @author Simon Samuel
  */
-contract AlwaysAlive {
+contract AlwaysAlive is YieldAggregator, VRFConsumer {
     address public lastInvestedKin;
 
     uint256 private lastHourStamp;
@@ -39,7 +42,7 @@ contract AlwaysAlive {
     event paidDailyProfits(address kin, uint256 when);
     event deposited(address payer, uint256 amount);
 
-    constructor() payable {
+    constructor(uint64 _subscriptionId) payable VRFConsumer(_subscriptionId) {
         lastHourStamp = block.timestamp;
         lastDayStamp = block.timestamp;
         lastWeekStamp = block.timestamp;
@@ -99,7 +102,7 @@ contract AlwaysAlive {
     }
 
     // =====    INVESTMENT SECTION     =====
-    function invest() public view {
+    function bless() public view {
         require(
             (block.timestamp - lastWeekStamp) > WEEKLY_INTERVAL,
             "Not up to a Week!"
@@ -108,8 +111,8 @@ contract AlwaysAlive {
         // Sends balance to AAVE and collects profit for the day.
     }
 
-    // =====    BLESSING SECTION       =====
-    function bless() public {
+    // =====    INHERITANCE SECTION       =====
+    function inherit() public {
         require(
             (block.timestamp - lastDayStamp) > DAILY_INTERVAL,
             "Not up to a Day!"
@@ -122,7 +125,7 @@ contract AlwaysAlive {
                 (bool sent, ) = kinship[users[i]].kinAddress.call{
                     value: kinship[users[i]].kinAmount
                 }("");
-                require(sent, "Failed to send blessings.");
+                require(sent, "Failed to send Inheritance to kin.");
                 kinship[users[i]].paidKin = true;
 
                 emit blessed(kinship[users[i]].kinAddress, block.timestamp);

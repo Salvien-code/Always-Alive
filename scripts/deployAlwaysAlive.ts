@@ -3,9 +3,10 @@ import { setTimeout } from "timers/promises";
 
 async function main() {
   const initialDeposit = ethers.utils.parseEther("0.01");
+  const subscriptionID = 2710;
 
   const AlwayAliveFactory = await ethers.getContractFactory("AlwaysAlive");
-  const alwaysAliveContract = await AlwayAliveFactory.deploy({
+  const alwaysAliveContract = await AlwayAliveFactory.deploy(subscriptionID, {
     value: initialDeposit,
   });
   await alwaysAliveContract.deployed();
@@ -19,6 +20,7 @@ async function main() {
 
   await run("verify:verify", {
     address: alwaysAliveContract.address,
+    constructorArguments: [subscriptionID],
   });
   console.log(`Verified AlwaysAlive contract on PolygonScan`);
 }
