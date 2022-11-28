@@ -3,6 +3,9 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Registration from "../components/Registration";
+import ValidateLife from "../components/ValidateLife";
+import Blessing from "../components/Blessing";
 
 export default function Home() {
   return (
@@ -30,27 +33,14 @@ export default function Home() {
 
         <div className={styles.grid}>
           <div className={styles.card}>
-            <h2>Register &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
+            <Registration />
           </div>
 
           <div className={styles.card}>
-            <h2>Validate Life &rarr;</h2>
-            <p>Hit the validate button before your Confirmations hit 5!</p>
-
-            <h2>Get Current Confirmations</h2>
-            <p>
-              You&apos;re currently at {} Confirmations, click ValidateLife to
-              take it back to zero!
-            </p>
-          </div>
-          <div className={styles.card}>
-            <h2>Blessed Kin</h2>
-            <p>
-              The protocol paid the earnings of last week {} to {}.
-            </p>
+            <ValidateLife />
           </div>
         </div>
+        <Blessing />
       </main>
 
       <footer className={styles.footer}>

@@ -87,9 +87,10 @@
 .grid {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   flex-wrap: wrap;
-  max-width: 70vw;
+  width: 80%;
+  /* max-width: 70vw; */
 }
 
 .card {
@@ -102,7 +103,7 @@
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  max-width: 20vw;
+  width: 30vw;
 }
 
 .card:hover,
@@ -128,7 +129,7 @@
   border-radius: 1rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
   .grid {
     width: 100%;
     flex-direction: column;
