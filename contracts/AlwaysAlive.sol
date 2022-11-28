@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./YieldAggregator.sol";
+import "./VRFConsumer.sol";
+
 /**
  * @author Simon Samuel
  */
-contract AlwaysAlive {
-    address public lastInvestedKin;
+contract AlwaysAlive is YieldAggregator, VRFConsumer {
+    address public lastBlessedKin;
 
     uint256 private lastHourStamp;
     uint256 private lastDayStamp;
@@ -31,7 +34,7 @@ contract AlwaysAlive {
 
     // Core Events
     event registered(address user, uint256 when);
-    event invested(address kin, uint256 when);
+    event inheritered(address kin, uint256 when);
     event blessed(address kin, uint256 when);
 
     // Timed Events
@@ -39,7 +42,11 @@ contract AlwaysAlive {
     event paidDailyProfits(address kin, uint256 when);
     event deposited(address payer, uint256 amount);
 
-    constructor() payable {
+    constructor(uint64 _subscriptionId)
+        payable
+        YieldAggregator()
+        VRFConsumer(_subscriptionId)
+    {
         lastHourStamp = block.timestamp;
         lastDayStamp = block.timestamp;
         lastWeekStamp = block.timestamp;
@@ -98,8 +105,8 @@ contract AlwaysAlive {
         emit registered(msg.sender, block.timestamp);
     }
 
-    // =====    INVESTMENT SECTION     =====
-    function invest() public view {
+    // =====    BLESSING SECTION     =====
+    function bless() public view {
         require(
             (block.timestamp - lastWeekStamp) > WEEKLY_INTERVAL,
             "Not up to a Week!"
@@ -108,8 +115,13 @@ contract AlwaysAlive {
         // Sends balance to AAVE and collects profit for the day.
     }
 
-    // =====    BLESSING SECTION       =====
-    function bless() public {
+    // =====    INHERITANCE SECTION       =====
+    /**
+     * @dev This function is called by chainlink automation every 24 hours.
+     * It transfers deposited funds to next of kin if validation of life is false.
+     */
+
+    function inherit() public {
         require(
             (block.timestamp - lastDayStamp) > DAILY_INTERVAL,
             "Not up to a Day!"
@@ -122,23 +134,28 @@ contract AlwaysAlive {
                 (bool sent, ) = kinship[users[i]].kinAddress.call{
                     value: kinship[users[i]].kinAmount
                 }("");
-                require(sent, "Failed to send blessings.");
+                require(sent, "Failed to send Inheritance to kin.");
                 kinship[users[i]].paidKin = true;
 
-                emit blessed(kinship[users[i]].kinAddress, block.timestamp);
+                emit inheritered(kinship[users[i]].kinAddress, block.timestamp);
             }
         }
     }
 
     // =====    HELPERS SECTION        =====
+    /**
+     * @dev Resets the current confirmation of the user to 0.
+     * Thereby assuring the protocol the user is still alive.
+     */
     function validateLife() public onlyUsers(msg.sender) {
         kinship[msg.sender].currNumberOfConfirmations = 0;
     }
 
-    function deposit() public payable {
-        emit deposited(msg.sender, msg.value);
-    }
-
+    /**
+     * @dev This function is called by Chainlink Automation and
+     * increases the Confirmations of all users that are still alive
+     * every hour.
+     */
     function incrementConfirmations() public {
         require(
             (block.timestamp - lastHourStamp) > HOURLY_INTERVAL,
@@ -164,12 +181,16 @@ contract AlwaysAlive {
     }
 
     function getCurrentConfirmations(address _user)
-        public
+        external
         view
         onlyUsers(_user)
         returns (uint8)
     {
         return kinship[_user].currNumberOfConfirmations;
+    }
+
+    function getLastBlessedKin() external view returns (address) {
+        return lastBlessedKin;
     }
 
     receive() external payable {
