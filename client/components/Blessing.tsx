@@ -1,9 +1,10 @@
+import styles from "../styles/Blessing.module.css";
+
 function Blessing() {
   return (
     <div>
-      <h2>Blessed Kin</h2>
-      <p>
-        The protocol paid the earnings of last week {} to {}.
+      <p className={styles.description}>
+        The protocol pays a random kin paid the earnings of last week {} to {}.
       </p>
     </div>
   );

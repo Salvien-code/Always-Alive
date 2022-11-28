@@ -1,13 +1,3 @@
-.input {
-  width: 80%;
-  padding: 12px 20px;
-  margin: 12px 0;
-  display: inline-block;
-  border: 1px solid #0e76fd;
-  box-sizing: border-box;
-  border-radius: 16px;
-}
-
 .h1 {
   display: flex;
   align-items: center;
@@ -34,6 +24,5 @@
 }
 
 .description {
-  font-size: small;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
