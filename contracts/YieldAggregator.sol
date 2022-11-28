@@ -3,14 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@aave/periphery-v3/contracts/misc/interfaces/IWrappedTokenGatewayV3.sol";
 import "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@aave/core-v3/contracts/interfaces/IAToken.sol";
 
 contract YieldAggregator {
-    using SafeERC20 for IERC20;
-
-    address aWETHTokenAddress = 0x685bF4eab23993E94b4CFb9383599c926B66cF57;
-    IERC20 aWETH = IERC20(aWETHTokenAddress);
+    address aMATICAddress = 0x89a6AE840b3F8f489418933A220315eeA36d11fF;
+    IAToken aMATIC = IAToken(aMATICAddress);
 
     address WETHGateWayAddress = 0x2a58E9bbb5434FdA7FF78051a4B82cb0EF669C17;
     IWrappedTokenGatewayV3 WETHGateWay =
@@ -19,10 +16,15 @@ contract YieldAggregator {
     IPoolAddressesProvider poolAddressProvider =
         IPoolAddressesProvider(0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6);
 
-    address public poolAddress = poolAddressProvider.getPool();
+    address poolAddress;
+
+    constructor() {
+        poolAddress = poolAddressProvider.getPool();
+    }
 
     event suppliedMatic(address user, uint256 when);
     event withdrawnMatic(address user, uint256 when);
+    event approvedMatic(address spender, uint256 amount);
 
     function depositMatic(uint256 amount) public {
         WETHGateWay.depositETH{value: amount}(poolAddress, msg.sender, 0);
@@ -30,7 +32,10 @@ contract YieldAggregator {
     }
 
     function withdrawMatic(uint256 amount, address kin) public {
-        aWETH.approve(WETHGateWayAddress, amount);
+        bool approved = aMATIC.approve(WETHGateWayAddress, amount);
+        require(approved, "Could not approve.");
+        emit approvedMatic(WETHGateWayAddress, amount);
+
         WETHGateWay.withdrawETH(poolAddress, amount, kin);
         emit withdrawnMatic(kin, block.timestamp);
     }

@@ -8,7 +8,7 @@ import "./VRFConsumer.sol";
  * @author Simon Samuel
  */
 contract AlwaysAlive is YieldAggregator, VRFConsumer {
-    address public lastInvestedKin;
+    address public lastBlessedKin;
 
     uint256 private lastHourStamp;
     uint256 private lastDayStamp;
@@ -34,7 +34,7 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
 
     // Core Events
     event registered(address user, uint256 when);
-    event invested(address kin, uint256 when);
+    event inheritered(address kin, uint256 when);
     event blessed(address kin, uint256 when);
 
     // Timed Events
@@ -42,7 +42,11 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
     event paidDailyProfits(address kin, uint256 when);
     event deposited(address payer, uint256 amount);
 
-    constructor(uint64 _subscriptionId) payable VRFConsumer(_subscriptionId) {
+    constructor(uint64 _subscriptionId)
+        payable
+        YieldAggregator()
+        VRFConsumer(_subscriptionId)
+    {
         lastHourStamp = block.timestamp;
         lastDayStamp = block.timestamp;
         lastWeekStamp = block.timestamp;
@@ -101,7 +105,7 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
         emit registered(msg.sender, block.timestamp);
     }
 
-    // =====    INVESTMENT SECTION     =====
+    // =====    BLESSING SECTION     =====
     function bless() public view {
         require(
             (block.timestamp - lastWeekStamp) > WEEKLY_INTERVAL,
@@ -112,6 +116,11 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
     }
 
     // =====    INHERITANCE SECTION       =====
+    /**
+     * @dev This function is called by chainlink automation every 24 hours.
+     * It transfers deposited funds to next of kin if validation of life is false.
+     */
+
     function inherit() public {
         require(
             (block.timestamp - lastDayStamp) > DAILY_INTERVAL,
@@ -128,20 +137,25 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
                 require(sent, "Failed to send Inheritance to kin.");
                 kinship[users[i]].paidKin = true;
 
-                emit blessed(kinship[users[i]].kinAddress, block.timestamp);
+                emit inheritered(kinship[users[i]].kinAddress, block.timestamp);
             }
         }
     }
 
     // =====    HELPERS SECTION        =====
+    /**
+     * @dev Resets the current confirmation of the user to 0.
+     * Thereby assuring the protocol the user is still alive.
+     */
     function validateLife() public onlyUsers(msg.sender) {
         kinship[msg.sender].currNumberOfConfirmations = 0;
     }
 
-    function deposit() public payable {
-        emit deposited(msg.sender, msg.value);
-    }
-
+    /**
+     * @dev This function is called by Chainlink Automation and
+     * increases the Confirmations of all users that are still alive
+     * every hour.
+     */
     function incrementConfirmations() public {
         require(
             (block.timestamp - lastHourStamp) > HOURLY_INTERVAL,
@@ -167,12 +181,16 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
     }
 
     function getCurrentConfirmations(address _user)
-        public
+        external
         view
         onlyUsers(_user)
         returns (uint8)
     {
         return kinship[_user].currNumberOfConfirmations;
+    }
+
+    function getLastBlessedKin() external view returns (address) {
+        return lastBlessedKin;
     }
 
     receive() external payable {
