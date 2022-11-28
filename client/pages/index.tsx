@@ -4,8 +4,8 @@ import styles from "../styles/Home.module.css";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Registration from "../components/Registration";
-import ValidateLife from "../components/ValidateLife";
 import Blessing from "../components/Blessing";
+import Validation from "../components/Validation";
 
 export default function Home() {
   return (
@@ -37,7 +37,7 @@ export default function Home() {
           </div>
 
           <div className={styles.card}>
-            <ValidateLife />
+            <Validation />
           </div>
         </div>
         <Blessing />
