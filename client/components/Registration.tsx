@@ -1,28 +1,30 @@
 import { ethers } from "ethers";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { usePrepareContractWrite, useContractWrite, useAccount } from "wagmi";
 import styles from "../styles/Registration.module.css";
 import { ALWAYS_ALIVE_ABI, ALWAYS_ALIVE_ADDRESS } from "../utils/constants";
 
 function Registration() {
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>();
   const [kinAddress, setKinAddress] = useState<string>();
 
   const { config } = usePrepareContractWrite({
     address: ALWAYS_ALIVE_ADDRESS,
     abi: ALWAYS_ALIVE_ABI,
     chainId: 80001,
+    enabled: Boolean(amount) && Boolean(kinAddress),
     functionName: "register",
     args: [kinAddress],
     overrides: {
       value:
-        amount == ""
+        typeof amount == "undefined"
           ? ethers.BigNumber.from("0")
           : ethers.utils.parseEther(amount),
     },
   });
 
-  const { data, isLoading, isSuccess, write } = useContractWrite({
+  const { data, isLoading, write } = useContractWrite({
     ...config,
     onError(error) {
       window.alert(`Error: ${error}`);

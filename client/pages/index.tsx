@@ -1,13 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import styles from "../styles/Home.module.css";
-
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Registration from "../components/Registration";
 import Blessing from "../components/Blessing";
-import Validation from "../components/Validation";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Home() {
+  const DynamicMain = dynamic(() => import("../components/Main"), {
+    ssr: false,
+  });
+
   return (
     <div className={styles.container}>
       <Head>
@@ -27,19 +29,13 @@ export default function Home() {
         <ConnectButton />
       </header>
       <main className={styles.main}>
-        <p className={styles.description}>
-          A Truly Decentralized Medium to send Funds to your Next of Kin.
-        </p>
-
-        <div className={styles.grid}>
-          <div className={styles.card}>
-            <Registration />
-          </div>
-
-          <div className={styles.card}>
-            <Validation />
-          </div>
+        <div id="interface">
+          <p className={styles.description}>
+            A Truly Decentralized Medium to send Funds to your Next of Kin.
+          </p>
+          <DynamicMain />
         </div>
+
         <Blessing />
       </main>
 
