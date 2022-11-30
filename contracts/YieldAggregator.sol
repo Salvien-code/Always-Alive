@@ -5,6 +5,11 @@ import "@aave/periphery-v3/contracts/misc/interfaces/IWrappedTokenGatewayV3.sol"
 import "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
 import "@aave/core-v3/contracts/interfaces/IAToken.sol";
 
+/**
+ * @author Simon Samuel
+ * @notice We can't earn yield on the AAVE testnet so I can not integrate this into
+ * the always alive protocol.
+ */
 contract YieldAggregator {
     address aMATICAddress = 0x89a6AE840b3F8f489418933A220315eeA36d11fF;
     IAToken aMATIC = IAToken(aMATICAddress);
@@ -26,12 +31,12 @@ contract YieldAggregator {
     event withdrawnMatic(address user, uint256 when);
     event approvedMatic(address spender, uint256 amount);
 
-    function depositMatic(uint256 amount) public {
+    function depositMatic(uint256 amount) public payable {
         WETHGateWay.depositETH{value: amount}(poolAddress, msg.sender, 0);
         emit suppliedMatic(msg.sender, block.timestamp);
     }
 
-    function withdrawMatic(uint256 amount, address kin) public {
+    function withdrawMatic(uint256 amount, address kin) public payable {
         bool approved = aMATIC.approve(WETHGateWayAddress, amount);
         require(approved, "Could not approve.");
         emit approvedMatic(WETHGateWayAddress, amount);
@@ -39,4 +44,8 @@ contract YieldAggregator {
         WETHGateWay.withdrawETH(poolAddress, amount, kin);
         emit withdrawnMatic(kin, block.timestamp);
     }
+
+    receive() external payable {}
+
+    fallback() external payable {}
 }

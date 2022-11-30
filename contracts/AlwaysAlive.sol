@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./YieldAggregator.sol";
+// import "./YieldAggregator.sol";
 import "./VRFConsumer.sol";
 
 /**
  * @author Simon Samuel
  */
-contract AlwaysAlive is YieldAggregator, VRFConsumer {
+contract AlwaysAlive is VRFConsumer {
     address public lastBlessedKin;
 
     uint256 private lastHourStamp;
@@ -42,11 +42,7 @@ contract AlwaysAlive is YieldAggregator, VRFConsumer {
     event paidDailyProfits(address kin, uint256 when);
     event deposited(address payer, uint256 amount);
 
-    constructor(uint64 _subscriptionId)
-        payable
-        YieldAggregator()
-        VRFConsumer(_subscriptionId)
-    {
+    constructor(uint64 _subscriptionId) payable VRFConsumer(_subscriptionId) {
         lastHourStamp = block.timestamp;
         lastDayStamp = block.timestamp;
         lastWeekStamp = block.timestamp;
