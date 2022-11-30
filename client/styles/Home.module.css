@@ -72,9 +72,15 @@
 
 .description {
   margin: 0 0;
-  margin-bottom: 6rem;
+  margin-bottom: 1rem;
+  margin-top: 4rem;
   line-height: 1.5;
   font-size: 1.5rem;
+}
+
+.link {
+  /* color: #0e76fd; */
+  text-decoration-line: underline;
 }
 
 .code {

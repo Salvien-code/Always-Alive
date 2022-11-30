@@ -27,8 +27,8 @@ function Validation() {
     onError(error) {
       window.alert(`Error: ${error}`);
     },
-    onSuccess(data) {
-      window.alert(`Registered successfully ${data}`);
+    onSuccess() {
+      window.alert(`You have validated life!`);
     },
   });
 

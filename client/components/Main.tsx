@@ -20,7 +20,7 @@ function Main() {
         </div>
       ) : (
         <div>
-          <h1>Please connect your wallet!</h1>
+          <h1 className={styles.title}>Please connect your wallet!</h1>
         </div>
       )}
     </div>

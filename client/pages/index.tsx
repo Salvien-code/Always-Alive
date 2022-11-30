@@ -2,8 +2,8 @@ import Head from "next/head";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import styles from "../styles/Home.module.css";
-import Blessing from "../components/Blessing";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Link from "next/link";
 
 export default function Home() {
   const DynamicMain = dynamic(() => import("../components/Main"), {
@@ -20,8 +20,8 @@ export default function Home() {
 
       <header className={styles.header}>
         <Image
-          height={300}
-          width={300}
+          height={250}
+          width={250}
           src="/Always_Alive_Logo.svg"
           alt="Always Alive Logo"
         ></Image>{" "}
@@ -35,8 +35,13 @@ export default function Home() {
           </p>
           <DynamicMain />
         </div>
-
-        <Blessing />
+        <p className={styles.description}>
+          Check the{" "}
+          <Link className={styles.link} href="/about">
+            about
+          </Link>{" "}
+          page for more description
+        </p>
       </main>
 
       <footer className={styles.footer}>

@@ -70,13 +70,6 @@
   text-align: center;
 }
 
-.description {
-  margin: 0 0;
-  margin-bottom: 6rem;
-  line-height: 1.5;
-  font-size: 1.5rem;
-}
-
 .code {
   background: #fafafa;
   border-radius: 5px;
@@ -91,14 +84,13 @@
   align-items: center;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  width: 80%;
   /* max-width: 70vw; */
 }
 
 .card {
   margin: 1rem;
   padding: 1.5rem;
-  height: 25rem;
+  height: 28rem;
   text-align: left;
   color: inherit;
   text-decoration: none;
