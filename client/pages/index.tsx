@@ -1,10 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import styles from "../styles/Home.module.css";
-
+import Blessing from "../components/Blessing";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Home() {
+  const DynamicMain = dynamic(() => import("../components/Main"), {
+    ssr: false,
+  });
+
   return (
     <div className={styles.container}>
       <Head>
@@ -24,33 +29,14 @@ export default function Home() {
         <ConnectButton />
       </header>
       <main className={styles.main}>
-        <p className={styles.description}>
-          A Truly Decentralized Medium to send Funds to your Next of Kin.
-        </p>
-
-        <div className={styles.grid}>
-          <div className={styles.card}>
-            <h2>Register &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </div>
-
-          <div className={styles.card}>
-            <h2>Validate Life &rarr;</h2>
-            <p>Hit the validate button before your Confirmations hit 5!</p>
-
-            <h2>Get Current Confirmations</h2>
-            <p>
-              You&apos;re currently at {} Confirmations, click ValidateLife to
-              take it back to zero!
-            </p>
-          </div>
-          <div className={styles.card}>
-            <h2>Blessed Kin</h2>
-            <p>
-              The protocol paid the earnings of last week {} to {}.
-            </p>
-          </div>
+        <div id="interface">
+          <p className={styles.description}>
+            A Truly Decentralized Medium to send Funds to your Next of Kin.
+          </p>
+          <DynamicMain />
         </div>
+
+        <Blessing />
       </main>
 
       <footer className={styles.footer}>
