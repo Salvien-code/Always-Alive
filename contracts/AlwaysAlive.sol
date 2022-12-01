@@ -41,7 +41,7 @@ contract AlwaysAlive {
         uint256 kinAmount;
         bool paidKin;
         bool validationOfLife;
-        bool signed;
+        bytes signature;
         int8 currNumberOfConfirmations;
     }
 
@@ -125,7 +125,7 @@ contract AlwaysAlive {
         kinship[msg.sender].validationOfLife = true;
         kinship[msg.sender].kinAmount = msg.value;
         kinship[msg.sender].paidKin = false;
-        kinship[msg.sender].signed = true;
+        kinship[msg.sender].signature = signature;
 
         // Transfers Registration MATIC to AAVE.
         Aggregator.depositMatic{value: msg.value}(msg.value);
