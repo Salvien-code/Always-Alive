@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "./YieldAggregator.sol";
 import "./VRFConsumer.sol";
 import "./SignatureVerifier.sol";
-import "hardhat/console.sol";
 
 /**
  * @author Simon Samuel
@@ -16,10 +15,10 @@ contract AlwaysAlive {
     uint256 public MAX_AMOUNT = 1 ether;
 
     // Interval Constants
-    uint64 private INCREMENT_CONFIRMATION_INTERVAL = 6 * 60 * 60;
-    uint64 private REQUEST_RANDOM_NUMBER_INTERVAL = 24 * 60 * 60;
-    uint64 private INHERIT_INTERVAL = 3 * 24 * 60 * 60;
-    uint64 private BLESS_INTERVAL = 24 * 60 * 60;
+    uint64 private INCREMENT_CONFIRMATION_INTERVAL = 3 * 60 * 60;
+    uint64 private REQUEST_RANDOM_NUMBER_INTERVAL = 6 * 60 * 60;
+    uint64 private INHERIT_INTERVAL = 12 * 60 * 60;
+    uint64 private BLESS_INTERVAL = 6 * 60 * 60;
 
     // Helper Contracts
     VRFConsumer Consumer;
@@ -57,13 +56,8 @@ contract AlwaysAlive {
 
     constructor(uint64 _subscriptionId) payable {
         Consumer = new VRFConsumer(_subscriptionId);
-        console.log("Consumer is deployed to %s", address(Consumer));
-
         Verifier = new SignatureVerifier();
-        console.log("Verifier is deployed to %s", address(Verifier));
-
         Aggregator = new YieldAggregator();
-        console.log("Aggregator is deployed to %s", address(Aggregator));
 
         lastIncrementStamp = block.timestamp;
         lastInheritStamp = block.timestamp;
@@ -280,6 +274,18 @@ contract AlwaysAlive {
 
     function getLastPayout() external view returns (uint256) {
         return lastBlessPayout;
+    }
+
+    function getConsumerAddress() external view returns (address) {
+        return address(Consumer);
+    }
+
+    function getVerifierAddress() external view returns (address) {
+        return address(Verifier);
+    }
+
+    function getAggregatorAddress() external view returns (address) {
+        return address(Aggregator);
     }
 
     receive() external payable {}

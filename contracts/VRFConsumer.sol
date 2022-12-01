@@ -6,6 +6,11 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @author Simon Samuel
+ * @notice This contract is HEAVILY inspired by https://docs.chain.link/vrf/v2/subscription/examples/get-a-random-number
+ */
+
 contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
     mapping(uint256 => RequestStatus) public requests;
     VRFCoordinatorV2Interface COORDINATOR;
