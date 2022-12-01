@@ -57,13 +57,13 @@ contract AlwaysAlive {
 
     constructor(uint64 _subscriptionId) payable {
         Consumer = new VRFConsumer(_subscriptionId);
-        console.log("Consumer is deployed to ", address(Consumer));
+        console.log("Consumer is deployed to %s", address(Consumer));
 
         Verifier = new SignatureVerifier();
-        console.log("Verifier is deployed to ", address(Verifier));
+        console.log("Verifier is deployed to %s", address(Verifier));
 
         Aggregator = new YieldAggregator();
-        console.log("Aggregator is deployed to ", address(Aggregator));
+        console.log("Aggregator is deployed to %s", address(Aggregator));
 
         lastIncrementStamp = block.timestamp;
         lastInheritStamp = block.timestamp;
