@@ -36,12 +36,18 @@ contract YieldAggregator {
         emit suppliedMatic(msg.sender, block.timestamp);
     }
 
-    function withdrawMatic(uint256 amount, address kin) public payable {
-        bool approved = aMATIC.approve(WETHGateWayAddress, amount);
-        require(approved, "Could not approve.");
-        emit approvedMatic(WETHGateWayAddress, amount);
+    function calculateMatic(uint256 totalDepositedAmount)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 profit = aMATIC.balanceOf(msg.sender) - totalDepositedAmount;
+        return profit;
 
-        WETHGateWay.withdrawETH(poolAddress, amount, kin);
-        emit withdrawnMatic(kin, block.timestamp);
+        // bool approved = aMATIC.approve(WETHGateWayAddress, amount);
+        // require(approved, "Could not approve.");
+        // emit approvedMatic(WETHGateWayAddress, amount);
+        // WETHGateWay.withdrawETH(poolAddress, amount, kin);
+        // emit withdrawnMatic(kin, block.timestamp);
     }
 }

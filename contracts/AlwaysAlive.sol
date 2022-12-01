@@ -8,10 +8,11 @@ import "./SignatureVerifier.sol";
 /**
  * @author Simon Samuel
  */
-contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
+contract AlwaysAlive {
     // Registration Constants
     int8 public MAX_NUMBER_OF_CONFIRMATIONS = 5;
     uint256 public MIN_AMOUNT = 0.001 ether;
+    uint256 public MAX_AMOUNT = 1 ether;
 
     // Interval Constants
     uint64 private INCREMENT_CONFIRMATION_INTERVAL = 6 * 60 * 60;
@@ -19,13 +20,20 @@ contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
     uint64 private INHERIT_INTERVAL = 3 * 24 * 60 * 60;
     uint64 private BLESS_INTERVAL = 24 * 60 * 60;
 
+    // Helper Contracts
+    VRFConsumer Consumer;
+    YieldAggregator Aggregator;
+    SignatureVerifier Verifier;
+
     // Tracking Variables
+    uint256 private totalDepositedFunds;
     uint256 private lastIncrementStamp;
     uint256 private lastInheritStamp;
     uint256 private lastBlessStamp;
+    uint256 public lastBlessPayout;
     address public lastBlessedKin;
     uint256 private lastVRFStamp;
-    uint256 public lastBlessPayout;
+    uint256 private lastVRFId;
 
     // User Data
     struct Kin {
@@ -46,7 +54,11 @@ contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
     event registered(address user, uint256 when);
     event incrementedConfirmations(uint256 when);
 
-    constructor(uint64 _subscriptionId) payable VRFConsumer(_subscriptionId) {
+    constructor(uint64 _subscriptionId) payable {
+        Consumer = new VRFConsumer(_subscriptionId);
+        Verifier = new SignatureVerifier();
+        Aggregator = new YieldAggregator();
+
         lastIncrementStamp = block.timestamp;
         lastInheritStamp = block.timestamp;
         lastBlessStamp = block.timestamp;
@@ -97,7 +109,15 @@ contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
         kinMustBeAnEOA(_kinAddress)
     {
         require(msg.value >= MIN_AMOUNT, "Minimum Registration is 0.001 MATIC");
-        require(verify(msg.sender, signature), "Not a valid signature!");
+        require(
+            msg.value <= MAX_AMOUNT,
+            "Cannot register with more than 1 MATIC"
+        );
+
+        require(
+            Verifier.verify(msg.sender, signature),
+            "Not a valid signature!"
+        );
 
         kinship[msg.sender].currNumberOfConfirmations = 0;
         kinship[msg.sender].kinAddress = _kinAddress;
@@ -107,17 +127,38 @@ contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
         kinship[msg.sender].signed = true;
 
         users.push(msg.sender);
+
+        totalDepositedFunds += msg.value;
+        Aggregator.depositMatic{value: msg.value}(msg.value);
+
         emit registered(msg.sender, block.timestamp);
     }
 
     // =====    BLESSING SECTION     =====
-    function bless() public view {
+    /**
+     * @dev This function is called at 12 Midnight everyday
+     * and sends profit from AAVE to a random Next of kin.
+     */
+    function bless() public payable {
         require(
             (block.timestamp - lastBlessStamp) > BLESS_INTERVAL,
             "Not up to a Day!"
         );
 
-        // Sends balance to AAVE and collects profit for the day.
+        (bool fulfilled, uint256[] memory randomWords) = Consumer
+            .getRequestStatus(lastVRFId);
+
+        require(fulfilled, "Random Words not received!");
+
+        uint256 randomIndex = block.timestamp % randomWords.length;
+        uint256 randomWinnerIndex = randomWords[randomIndex] % users.length;
+        address kin = kinship[users[randomWinnerIndex]].kinAddress;
+
+        uint256 profit = Aggregator.calculateMatic(totalDepositedFunds);
+        uint256 blessingAmount = (profit * 9) / 10;
+        (bool sent, ) = kin.call{value: blessingAmount}("");
+        require(sent, "Failed to bless kin.");
+        emit blessed(kin, blessingAmount, block.timestamp);
     }
 
     // =====    INHERITANCE SECTION       =====
@@ -140,6 +181,7 @@ contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
                     value: kinship[users[i]].kinAmount
                 }("");
                 require(sent, "Failed to send Inheritance to kin.");
+                totalDepositedFunds -= kinship[users[i]].kinAmount;
                 kinship[users[i]].paidKin = true;
 
                 emit inheritered(kinship[users[i]].kinAddress, block.timestamp);
@@ -148,6 +190,17 @@ contract AlwaysAlive is VRFConsumer, YieldAggregator, SignatureVerifier {
     }
 
     // =====    HELPERS SECTION        =====
+    /**
+     * @dev This function requests 5 random numbers at 12 Noon everyday and stores them.
+     */
+    function requestRandomness() public {
+        require(
+            (block.timestamp - lastVRFStamp) > REQUEST_RANDOM_NUMBER_INTERVAL,
+            "Not up to a Day!"
+        );
+        lastVRFId = Consumer.requestRandomWords();
+    }
+
     /**
      * @dev This function is called by Chainlink Automation and
      * increases the Confirmations of all users that are still alive
