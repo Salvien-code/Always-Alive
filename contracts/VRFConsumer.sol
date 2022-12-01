@@ -77,8 +77,6 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
         requests[_requestId].fulfilled = true;
         requests[_requestId].randomWords = _randomWords;
         emit RequestFulfilled(_requestId, _randomWords);
-
-        // Section for paying random kin profit
     }
 
     function getRequestStatus(uint256 _requestId)

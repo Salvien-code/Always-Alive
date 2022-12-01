@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "./YieldAggregator.sol";
 import "./VRFConsumer.sol";
 import "./SignatureVerifier.sol";
+import "hardhat/console.sol";
 
 /**
  * @author Simon Samuel
@@ -48,7 +49,7 @@ contract AlwaysAlive {
     mapping(address => Kin) kinship;
     address[] public users;
 
-    // Events for logging
+    // Events
     event blessed(address kin, uint256 amount, uint256 when);
     event inheritered(address kin, uint256 when);
     event registered(address user, uint256 when);
@@ -56,8 +57,13 @@ contract AlwaysAlive {
 
     constructor(uint64 _subscriptionId) payable {
         Consumer = new VRFConsumer(_subscriptionId);
+        console.log("Consumer is deployed to ", address(Consumer));
+
         Verifier = new SignatureVerifier();
+        console.log("Verifier is deployed to ", address(Verifier));
+
         Aggregator = new YieldAggregator();
+        console.log("Aggregator is deployed to ", address(Aggregator));
 
         lastIncrementStamp = block.timestamp;
         lastInheritStamp = block.timestamp;
@@ -114,10 +120,11 @@ contract AlwaysAlive {
             "Cannot register with more than 1 MATIC"
         );
 
-        require(
-            Verifier.verify(msg.sender, signature),
-            "Not a valid signature!"
-        );
+        // TODO: Get Signature verification to work
+        // require(
+        //     Verifier.verify(msg.sender, signature),
+        //     "Not a valid signature!"
+        // );
 
         kinship[msg.sender].currNumberOfConfirmations = 0;
         kinship[msg.sender].kinAddress = _kinAddress;
@@ -126,10 +133,10 @@ contract AlwaysAlive {
         kinship[msg.sender].paidKin = false;
         kinship[msg.sender].signed = true;
 
-        users.push(msg.sender);
-
-        totalDepositedFunds += msg.value;
+        // Transfers Registration MATIC to AAVE.
         Aggregator.depositMatic{value: msg.value}(msg.value);
+        totalDepositedFunds += msg.value;
+        users.push(msg.sender);
 
         emit registered(msg.sender, block.timestamp);
     }
@@ -150,14 +157,23 @@ contract AlwaysAlive {
 
         require(fulfilled, "Random Words not received!");
 
+        // Selects a random index of the RandomWords
         uint256 randomIndex = block.timestamp % randomWords.length;
+
+        // Selects a random winner based on the selected random number
         uint256 randomWinnerIndex = randomWords[randomIndex] % users.length;
         address kin = kinship[users[randomWinnerIndex]].kinAddress;
 
+        // Sends 90% of the earned yield to a the kin.
         uint256 profit = Aggregator.calculateMatic(totalDepositedFunds);
         uint256 blessingAmount = (profit * 9) / 10;
+
         (bool sent, ) = kin.call{value: blessingAmount}("");
         require(sent, "Failed to bless kin.");
+
+        lastBlessPayout = blessingAmount;
+        lastBlessedKin = kin;
+
         emit blessed(kin, blessingAmount, block.timestamp);
     }
 

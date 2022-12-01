@@ -8,7 +8,8 @@ import "@aave/core-v3/contracts/interfaces/IAToken.sol";
 /**
  * @author Simon Samuel
  * @notice We can't earn yield on the AAVE testnet so I can not integrate this into
- * the always alive protocol.
+ * the always alive protocol. Will send equivalent profit from the Always Alive contract
+ * instead.
  */
 contract YieldAggregator {
     address aMATICAddress = 0x89a6AE840b3F8f489418933A220315eeA36d11fF;
