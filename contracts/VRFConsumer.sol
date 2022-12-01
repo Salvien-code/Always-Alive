@@ -22,7 +22,7 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
 
     uint16 requestConfirmations = 3;
 
-    uint32 numWords = 3;
+    uint32 numWords = 5;
 
     struct RequestStatus {
         bool fulfilled;

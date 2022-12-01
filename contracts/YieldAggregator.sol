@@ -44,8 +44,4 @@ contract YieldAggregator {
         WETHGateWay.withdrawETH(poolAddress, amount, kin);
         emit withdrawnMatic(kin, block.timestamp);
     }
-
-    receive() external payable {}
-
-    fallback() external payable {}
 }
