@@ -39,7 +39,7 @@ export default function Home() {
 
         <p className={styles.description}>
           Check the{" "}
-          <Link className={styles.link} href="/about">
+          <Link className={styles.link} href="/about" target="_blank">
             about
           </Link>{" "}
           page for more description
