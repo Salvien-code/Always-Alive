@@ -43,3 +43,9 @@
 .ol {
   margin: 20px 10px;
 }
+
+.readData {
+  color: #0e76fd;
+  display: inline;
+  margin-left: 10px;
+}

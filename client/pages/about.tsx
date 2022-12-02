@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 
-import styles from "../styles/Home.module.css";
+import styles from "../styles/About.module.css";
 import { ALWAYS_ALIVE_ADDRESS } from "../utils/constants";
 
 export default function Home() {
@@ -24,13 +24,15 @@ export default function Home() {
         ></Image>{" "}
       </header>
 
-      <main>
+      <main className={styles.main}>
         <h1>Project Details</h1>
-        <p>
+        <p className={styles.description}>
           A decentralized way to send funds to a next of kin without the need
-          for a middleman.
+          for a middleman. Users have to validate life before their confirmation
+          counts exceed 5, the protocol transfers all deposited funds to next of
+          kin address when this happens.
         </p>
-        <p>
+        <p className={styles.description}>
           Here is the{" "}
           <Link
             href={`https://mumbai.polygonscan.com/address/${ALWAYS_ALIVE_ADDRESS}#code`}
@@ -46,42 +48,43 @@ export default function Home() {
         <h1>Tech Stack</h1>
         <dl>
           <ol>
-            <li>
-              <dt>Chainlink VRF</dt>
-              <dd>
+            <li className={styles.li}>
+              <dt className={styles.dt}>Chainlink VRF</dt>
+              <dd className={styles.dd}>
                 Chainlink provides the protocol with verifiable random numbers
                 which are used to determine a random kin that wins 90% of the
                 accrued yield from AAVE.
               </dd>
             </li>
-            <li>
-              <dt>Chainlink Automation</dt>
-              <dd>
+            <li className={styles.li}>
+              <dt className={styles.dt}>Chainlink Automation</dt>
+              <dd className={styles.dd}>
                 Chainlink Automation handles smart contract automation on some
                 functions:
                 <ul>
-                  <li>
-                    incrementConfirmations: Increments the counter of all users
-                    every 3 hours
+                  <li className={styles.li}>
+                    <b>incrementConfirmations: </b>Increments the counter of all
+                    users every 3 hours
                   </li>
-                  <li>
-                    bless: Transfers AAVE yield to random kin every 6 hours.
+                  <li className={styles.li}>
+                    <b>bless: </b>Transfers AAVE yield to random kin every 6
+                    hours.
                   </li>
-                  <li>
-                    Inherit: Pays out deposited to kin when user
+                  <li className={styles.li}>
+                    <b>Inherit: </b>Pays out deposited to kin when user
                     validationOfLife is false. Runs every 12 hours
                   </li>
-                  <li>
-                    Request Randomness: Interacts with the deployed VRFConsumer
-                    contract to request random words. Called 3 hours before the
-                    bless function.
+                  <li className={styles.li}>
+                    <b>Request Randomness: </b>Interacts with the deployed
+                    VRFConsumer contract to request random words. Called 3 hours
+                    before the bless function.
                   </li>
                 </ul>
               </dd>
             </li>
-            <li>
-              <dt>AAVE</dt>
-              <dd>
+            <li className={styles.li}>
+              <dt className={styles.dt}>AAVE</dt>
+              <dd className={styles.dd}>
                 <p>
                   The Always Alive contract supplies all deposited funds to AAVE
                   to earn yield. 90% of the generated interest is sent to a
@@ -98,19 +101,21 @@ export default function Home() {
                 </p>
               </dd>
             </li>
-            <li>
-              <dt>Next.JS</dt>
-              <dd>The Frontend is built using Next.JS</dd>
+            <li className={styles.li}>
+              <dt className={styles.dt}>Next.JS</dt>
+              <dd className={styles.dd}>The Frontend is built using Next.JS</dd>
             </li>
 
-            <li>
-              <dt>Hardhat</dt>
-              <dd>Used Hardhat to develop the solidity smart contracts.</dd>
+            <li className={styles.li}>
+              <dt className={styles.dt}>Hardhat</dt>
+              <dd className={styles.dd}>
+                Used Hardhat to develop the solidity smart contracts.
+              </dd>
             </li>
 
-            <li>
-              <dt>RainbowKit and Wagmi</dt>
-              <dd>
+            <li className={styles.li}>
+              <dt className={styles.dt}>RainbowKit and Wagmi</dt>
+              <dd className={styles.dd}>
                 Helpful open-source projects for easily reading and writing to
                 the blockchain, and also provided an easy-to-use Connect Button.
               </dd>

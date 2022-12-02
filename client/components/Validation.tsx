@@ -25,7 +25,7 @@ function Validation() {
   } = useContractWrite({
     ...config,
     onError(error) {
-      window.alert(`Error: ${error}`);
+      window.alert(`Error: Something went wrong!`);
     },
     onSuccess() {
       window.alert(`You have validated life!`);
@@ -44,7 +44,14 @@ function Validation() {
       <div>
         <h1 className={styles.h1}>Validation</h1>
         <p className={styles.description}>
-          Your current Confirmations count: {readData as number}
+          Your current Confirmations count:{" "}
+          <div className={styles.readData}>
+            {typeof readData === "undefined"
+              ? "Not Registered"
+              : readData == -1
+              ? "Inherited"
+              : (readData as number)}
+          </div>
         </p>
         <ul className={styles.ol}>
           <li className={styles.li}>

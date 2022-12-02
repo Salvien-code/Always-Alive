@@ -15,7 +15,7 @@ export default function Home() {
     <div className={styles.container}>
       <Head>
         <title>Always Alive</title>
-        <meta name="description" content="A decentralized Next of Kin dApp" />
+        <meta name="description" content="A Next of Kin dApp" />
         <link rel="icon" href="/AA_logo.png" />
       </Head>
 
@@ -32,7 +32,7 @@ export default function Home() {
       <main className={styles.main}>
         <div id="interface">
           <p className={styles.description}>
-            A Truly Decentralized Medium to send Funds to your Next of Kin.
+            A Truly Decentralized Medium to Send Funds to your Next of Kin.
           </p>
           <DynamicMain />
         </div>

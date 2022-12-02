@@ -113,6 +113,7 @@ contract AlwaysAlive {
             msg.value <= MAX_AMOUNT,
             "Cannot register with more than 1 MATIC"
         );
+        require(msg.sender != _kinAddress, "You cannot be your Next of Kin");
 
         // TODO: Get Signature verification to work
         // require(
@@ -214,7 +215,7 @@ contract AlwaysAlive {
     /**
      * @dev This function is called by Chainlink Automation and
      * increases the Confirmations of all users that are still alive
-     * every hour.
+     * every 3 hours.
      */
     function incrementConfirmations() public {
         require(

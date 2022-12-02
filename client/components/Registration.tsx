@@ -46,11 +46,11 @@ function Registration() {
   let { isLoading: isWriteLoading, write } = useContractWrite({
     ...config,
     onError(error) {
-      window.alert(`Error: ${error.message}`);
+      window.alert(`Error: Something went wrong!`);
       isWriteLoading = false;
     },
-    onSuccess(data) {
-      window.alert(`Registered successfully ${data}`);
+    onSuccess() {
+      window.alert(`Registering...`);
     },
   });
 

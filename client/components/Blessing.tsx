@@ -9,18 +9,22 @@ function Blessing() {
     abi: ALWAYS_ALIVE_ABI,
     functionName: "getLastBlessedKin",
   });
+
   const { data: lastPayout } = useContractRead({
     address: ALWAYS_ALIVE_ADDRESS,
     abi: ALWAYS_ALIVE_ABI,
     functionName: "getLastPayout",
   });
 
+  if (typeof lastPayout == "undefined" || typeof lastBlessedKin == "undefined")
+    return <div></div>;
+
   let parsedPayout = ethers.utils.formatEther(lastPayout as BigNumber);
 
   return (
     <div>
       <p className={styles.description}>
-        The protocol last gifted {lastBlessedKin as string} with {parsedPayout}{" "}
+        The protocol last blessed {lastBlessedKin as string} with {parsedPayout}{" "}
         MATIC.
       </p>
     </div>

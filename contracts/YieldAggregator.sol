@@ -44,11 +44,5 @@ contract YieldAggregator {
     {
         uint256 profit = aMATIC.balanceOf(msg.sender) - totalDepositedAmount;
         return profit;
-
-        // bool approved = aMATIC.approve(WETHGateWayAddress, amount);
-        // require(approved, "Could not approve.");
-        // emit approvedMatic(WETHGateWayAddress, amount);
-        // WETHGateWay.withdrawETH(poolAddress, amount, kin);
-        // emit withdrawnMatic(kin, block.timestamp);
     }
 }
