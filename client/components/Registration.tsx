@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import Link from "next/link";
 import { useState } from "react";
 import {
   usePrepareContractWrite,
@@ -27,6 +26,7 @@ function Registration() {
     },
     onSuccess(data) {
       window.alert(`Signed successfully.`);
+      console.log(data);
       setSignature(data);
     },
   });
@@ -37,7 +37,7 @@ function Registration() {
     chainId: 80001,
     enabled: Boolean(amount) && Boolean(kinAddress) && Boolean(signature),
     functionName: "register",
-    args: [kinAddress],
+    args: [kinAddress, signature],
     overrides: {
       value: ethers.utils.parseEther(amount),
     },
@@ -47,7 +47,6 @@ function Registration() {
     ...config,
     onError(error) {
       window.alert(`Error: ${error.message}`);
-      console.error(error);
       isWriteLoading = false;
     },
     onSuccess(data) {
