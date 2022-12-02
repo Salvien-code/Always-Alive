@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import styles from "../styles/Home.module.css";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
+import Blessing from "../components/Blessing";
 
 export default function Home() {
   const DynamicMain = dynamic(() => import("../components/Main"), {
@@ -35,6 +36,7 @@ export default function Home() {
           </p>
           <DynamicMain />
         </div>
+
         <p className={styles.description}>
           Check the{" "}
           <Link className={styles.link} href="/about">

@@ -61,7 +61,7 @@ function Registration() {
         <h1 className={styles.h1}>Register Here!</h1>
         <ol className={styles.ol}>
           <li className={styles.li}>
-            Enter the Deposit Amount (Min 0.001 MATIC)
+            Enter the Deposit Amount (Min 0.001 MATIC, Max 1 MATIC)
           </li>
           <li className={styles.li}>Enter your Kin&apos;s Mumbai Address</li>
           <li className={styles.li}>Sign the transaction</li>
