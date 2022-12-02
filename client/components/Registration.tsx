@@ -26,7 +26,6 @@ function Registration() {
     },
     onSuccess(data) {
       window.alert(`Signed successfully.`);
-      console.log(data);
       setSignature(data);
     },
   });
@@ -47,6 +46,7 @@ function Registration() {
     ...config,
     onError(error) {
       window.alert(`Error: Something went wrong!`);
+      console.error(error);
       isWriteLoading = false;
     },
     onSuccess() {
@@ -63,7 +63,7 @@ function Registration() {
             Enter the Deposit Amount (Min 0.001 MATIC, Max 1 MATIC)
           </li>
           <li className={styles.li}>Enter your Kin&apos;s Mumbai Address</li>
-          <li className={styles.li}>Sign the transaction</li>
+          <li className={styles.li}>Sign the Registration Message</li>
           <li className={styles.li}>Hit the Register button</li>
         </ol>
 

@@ -51,6 +51,10 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
         subscriptionId = _subscriptionId;
     }
 
+    /**
+     * @dev This function is indirectly by Chainlink Automation since Always Alive
+     * smart contract acts as a proxy for it.
+     */
     function requestRandomWords()
         external
         onlyOwner
@@ -74,6 +78,10 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
         return requestId;
     }
 
+    /**
+     * @dev This function will be called by the Chainlink VRF Coordinator. The
+     * generated randomWords are then stored.
+     */
     function fulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords

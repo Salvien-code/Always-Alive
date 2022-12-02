@@ -7,6 +7,8 @@ import "./SignatureVerifier.sol";
 
 /**
  * @author Simon Samuel
+ * @notice The core logic of the Always Alive protocol. It handles the registration,
+ * blessing and inheritance of users or kins where applicable.
  */
 contract AlwaysAlive {
     // Registration Constants
@@ -99,8 +101,8 @@ contract AlwaysAlive {
 
     // =====    REGISTRATION SECTION   =====
     /**
-     * @param _kinAddress The address of the kin that the contract pays deposited funds to.
-     * @param signature Signature proving that user has authorized contract.
+     * @param _kinAddress The address of the kin that inherits the deposited funds.
+     * @param signature Signature proving that user has authorized the contract.
      */
     function register(address payable _kinAddress, bytes memory signature)
         public
@@ -138,13 +140,14 @@ contract AlwaysAlive {
 
     // =====    BLESSING SECTION     =====
     /**
-     * @dev This function is called at 12 Midnight everyday
-     * and sends profit from AAVE to a random Next of kin.
+     * @dev This function is called by Chainlink Automation every 6 hours (UTC).
+     * requestRandomness() is called 3 hours before this function is.
+     * It gifts a random kin address with the yield from AAVE.
      */
     function bless() public payable {
         require(
             (block.timestamp - lastBlessStamp) > BLESS_INTERVAL,
-            "Not up to a Day!"
+            "Not up to 6 hours!"
         );
 
         (bool fulfilled, uint256[] memory randomWords) = Consumer
@@ -159,7 +162,7 @@ contract AlwaysAlive {
         uint256 randomWinnerIndex = randomWords[randomIndex] % users.length;
         address kin = kinship[users[randomWinnerIndex]].kinAddress;
 
-        // Sends 90% of the earned yield to a the kin.
+        // Sends 90% of the earned yield to a random kin.
         uint256 profit = Aggregator.calculateMatic(totalDepositedFunds);
         uint256 blessingAmount = (profit * 9) / 10;
 
@@ -174,14 +177,14 @@ contract AlwaysAlive {
 
     // =====    INHERITANCE SECTION       =====
     /**
-     * @dev This function is called by chainlink automation every 3 days.
+     * @dev This function is called by chainlink automation every 12 hours (UTC).
      * It transfers deposited funds to next of kin if validation of life is false.
      */
 
     function inherit() public {
         require(
             (block.timestamp - lastInheritStamp) > INHERIT_INTERVAL,
-            "Not up to 6 hours!"
+            "Not up to 12 hours!"
         );
         for (uint8 i = 0; i < users.length; i++) {
             if (
@@ -202,12 +205,13 @@ contract AlwaysAlive {
 
     // =====    HELPERS SECTION        =====
     /**
-     * @dev This function requests 5 random numbers at 12 Noon everyday and stores them.
+     * @dev This function is called by Chainlink automation and requests 5 random numbers every 6 hours (UTC).
+     * This function is called 3 hours before the bless() is called.
      */
     function requestRandomness() public {
         require(
             (block.timestamp - lastVRFStamp) > REQUEST_RANDOM_NUMBER_INTERVAL,
-            "Not up to a Day!"
+            "Not up to 6 hours!"
         );
         lastVRFId = Consumer.requestRandomWords();
     }
@@ -221,7 +225,7 @@ contract AlwaysAlive {
         require(
             (block.timestamp - lastIncrementStamp) >
                 INCREMENT_CONFIRMATION_INTERVAL,
-            "Not up to 6 hours!"
+            "Not up to 3 hours!"
         );
 
         lastIncrementStamp = block.timestamp;

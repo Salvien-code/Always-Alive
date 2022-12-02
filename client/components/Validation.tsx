@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   useAccount,
   useContractRead,
@@ -18,14 +17,11 @@ function Validation() {
     functionName: "validateLife",
   });
 
-  const {
-    data: writeData,
-    isLoading,
-    write,
-  } = useContractWrite({
+  const { isLoading, write } = useContractWrite({
     ...config,
     onError(error) {
       window.alert(`Error: Something went wrong!`);
+      console.error(error);
     },
     onSuccess() {
       window.alert(`You have validated life!`);

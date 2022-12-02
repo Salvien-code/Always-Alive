@@ -10,7 +10,7 @@ export default function Home() {
     <div className={styles.container}>
       <Head>
         <title>Always Alive</title>
-        <meta name="description" content="A decentralized Next of Kin dApp" />
+        <meta name="description" content="About page of Next of Kin dApp" />
         <link rel="icon" href="/AA_logo.png" />
       </Head>
 
@@ -63,19 +63,19 @@ export default function Home() {
                 functions:
                 <ul>
                   <li className={styles.li}>
-                    <b>incrementConfirmations: </b>Increments the counter of all
-                    users every 3 hours
+                    <b>incrementConfirmations: </b>Increments the confirmations
+                    of all users every 3 hours
                   </li>
                   <li className={styles.li}>
-                    <b>bless: </b>Transfers AAVE yield to random kin every 6
+                    <b>bless: </b>Transfers AAVE yield to a random kin every 6
                     hours.
                   </li>
                   <li className={styles.li}>
-                    <b>Inherit: </b>Pays out deposited to kin when user
-                    validationOfLife is false. Runs every 12 hours
+                    <b>inherit: </b>Pays out deposit to kin when user
+                    validationOfLife is false (Runs every 12 hours).
                   </li>
                   <li className={styles.li}>
-                    <b>Request Randomness: </b>Interacts with the deployed
+                    <b>requestRandomness: </b>Interacts with the deployed
                     VRFConsumer contract to request random words. Called 3 hours
                     before the bless function.
                   </li>
@@ -93,10 +93,10 @@ export default function Home() {
                 <p>
                   <em>
                     The <b>AAVE Testnets</b> do not support withdraws so the
-                    deposited inheritance is gone the moment it is deposited to
-                    AAVE. So I improvised this by sending the inheritance from
-                    the contract balance, I will also periodically send MATIC to
-                    the contract so it always has liquidity.
+                    inheritance is gone the moment it is deposited to AAVE. So I
+                    improvised this by sending the inheritance from the contract
+                    balance, I will also periodically send MATIC to the contract
+                    so it always has liquidity for paying Kins.
                   </em>
                 </p>
               </dd>

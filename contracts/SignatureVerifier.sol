@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 /**
  * @author Simon Samuel
  * @notice This contract is HEAVILY inspired by https://solidity-by-example.org/signature/
+ * I also haven't been able to get it to work correctly :-(
  *
  */
 contract SignatureVerifier {
