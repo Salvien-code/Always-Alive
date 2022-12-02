@@ -52,7 +52,7 @@ function Validation() {
           </li>
           <li className={styles.li}>
             Your deposit funds will be inherited by your kin if confirmations
-            exceeds 5.
+            exceed 5.
           </li>
           <li className={styles.li}>
             The Protocol sends yield from AAVE to a random kin every 6 hours
