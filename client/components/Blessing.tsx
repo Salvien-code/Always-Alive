@@ -1,6 +1,7 @@
 import styles from "../styles/Blessing.module.css";
 import { ALWAYS_ALIVE_ABI, ALWAYS_ALIVE_ADDRESS } from "../utils/constants";
 import { useContractRead } from "wagmi";
+import { BigNumber, ethers } from "ethers";
 
 function Blessing() {
   const { data: lastBlessedKin } = useContractRead({
@@ -14,12 +15,13 @@ function Blessing() {
     functionName: "getLastPayout",
   });
 
+  let parsedPayout = ethers.utils.formatEther(lastPayout as BigNumber);
+
   return (
     <div>
       <p className={styles.description}>
-        {/* The protocol gifted {lastPayout ? (lastPayout as number) : ""}, the
-        accrued yield from AAVE to{" "}
-        {lastBlessedKin ? (lastBlessedKin as string) : ""}. */}
+        The protocol last gifted {lastBlessedKin as string} with {parsedPayout}{" "}
+        MATIC.
       </p>
     </div>
   );
