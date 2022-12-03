@@ -35,11 +35,11 @@ This is the added benefit of using the protocol, it sends 90% of the accrued int
 
 Users have to validate life before their confirmation counts exceed 5, the protocol transfers all the deposited amount to the next of kin address when this happens. The user's counts are incremented every 3 hours by Chainlink Automation but **Validating life** resets the user's confirmation counts to 0
 
-    The AAVE Testnets currently do not support withdraws so the deposited amount sent to AAVE during registration is gone. So I improvised this by sending the inheritance from the contract balance, I will also periodically send MATIC to the contract so it always has liquidity for paying Kins. This is the reason for the maximum deposit amount.
+_**The AAVE Testnets currently do not support withdraws so the deposited amount sent to AAVE during registration is gone. So I improvised this by sending the inheritance from the contract balance, I will also periodically send MATIC to the contract so it always has liquidity for paying Kins. This is the reason for the maximum deposit amount.**_
 
 # Developer's Final Words
 
-This project currently uses 3 hours as the increment interval but an ideal real-world instance would be in months or weeks and this interval would be preset by the user during registration. Also, only MATIC is allowed as deposits but in reality, even NFTs that legally signify ownership of property could be deposited to the protocol.
+This project currently uses 3 hours as the increment interval but an ideal real-world instance would be in months or years and this interval would be preset by the user during registration. Also, only MATIC is allowed as deposits but in reality, even NFTs that legally signify ownership of property could be deposited to the protocol.
 
 Then regarding the name, **Always Alive**... the user technically sends funds to his kin when he's passed on but this means the user is "actually" alive. Using **Actually Alive** as the project name is a terrible idea... which is why I opted for the next less terrible name. :-)
 
