@@ -7,7 +7,7 @@ export const UNPAID_NFT_URL =
   "https://bafkreihfifnp3hqdwj4uyp3lpv3zpa2ej546yqombbn4j2xgzqnramyydm.ipfs.nftstorage.link/";
 
 export const ALWAYS_ALIVE_ADDRESS =
-  "0xAC5Ee247dBd9e559E38fA6882Bc5F0f42B4624a3";
+  "0x3cd4E28CA85eEc549EdF514b423073Bd2c3dad1A";
 
 export const ALWAYS_ALIVE_ABI = alwaysAliveData.abi;
 
