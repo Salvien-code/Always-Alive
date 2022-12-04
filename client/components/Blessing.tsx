@@ -1,10 +1,31 @@
 import styles from "../styles/Blessing.module.css";
+import { ALWAYS_ALIVE_ABI, ALWAYS_ALIVE_ADDRESS } from "../utils/constants";
+import { useContractRead } from "wagmi";
+import { BigNumber, ethers } from "ethers";
 
 function Blessing() {
+  const { data: lastBlessedKin } = useContractRead({
+    address: ALWAYS_ALIVE_ADDRESS,
+    abi: ALWAYS_ALIVE_ABI,
+    functionName: "getLastBlessedKin",
+  });
+
+  const { data: lastPayout } = useContractRead({
+    address: ALWAYS_ALIVE_ADDRESS,
+    abi: ALWAYS_ALIVE_ABI,
+    functionName: "getLastPayout",
+  });
+
+  if (typeof lastPayout == "undefined" || typeof lastBlessedKin == "undefined")
+    return <div></div>;
+
+  let parsedPayout = ethers.utils.formatEther(lastPayout as BigNumber);
+
   return (
     <div>
       <p className={styles.description}>
-        The protocol pays a random kin paid the earnings of last week {} to {}.
+        The protocol last blessed {lastBlessedKin as string} with {parsedPayout}{" "}
+        MATIC.
       </p>
     </div>
   );

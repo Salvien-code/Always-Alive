@@ -7,8 +7,10 @@ import "@aave/core-v3/contracts/interfaces/IAToken.sol";
 
 /**
  * @author Simon Samuel
- * @notice We can't earn yield on the AAVE testnet so I can not integrate this into
- * the always alive protocol.
+ * @notice We can't earn yield on the AAVE testnet so I had to improvise in order to
+ * integrate this feature into the always alive protocol. It will send the equivalent
+ * profit from the Always Alive contract instead and not the actual deposited MATIC on
+ * AAVE.
  */
 contract YieldAggregator {
     address aMATICAddress = 0x89a6AE840b3F8f489418933A220315eeA36d11fF;
@@ -31,21 +33,24 @@ contract YieldAggregator {
     event withdrawnMatic(address user, uint256 when);
     event approvedMatic(address spender, uint256 amount);
 
+    /**
+     * @dev This function is called by the Always Alive contract whenever a user registers
+     * for the protocol.
+     */
     function depositMatic(uint256 amount) public payable {
         WETHGateWay.depositETH{value: amount}(poolAddress, msg.sender, 0);
         emit suppliedMatic(msg.sender, block.timestamp);
     }
 
-    function withdrawMatic(uint256 amount, address kin) public payable {
-        bool approved = aMATIC.approve(WETHGateWayAddress, amount);
-        require(approved, "Could not approve.");
-        emit approvedMatic(WETHGateWayAddress, amount);
-
-        WETHGateWay.withdrawETH(poolAddress, amount, kin);
-        emit withdrawnMatic(kin, block.timestamp);
+    /**
+     * @dev A helper function for determining the yield generated so far.
+     */
+    function calculateMatic(uint256 totalDepositedAmount)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 profit = aMATIC.balanceOf(msg.sender) - totalDepositedAmount;
+        return profit;
     }
-
-    receive() external payable {}
-
-    fallback() external payable {}
 }

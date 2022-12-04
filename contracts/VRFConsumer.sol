@@ -6,6 +6,11 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @author Simon Samuel
+ * @notice This contract is HEAVILY inspired by https://docs.chain.link/vrf/v2/subscription/examples/get-a-random-number
+ */
+
 contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
     mapping(uint256 => RequestStatus) public requests;
     VRFCoordinatorV2Interface COORDINATOR;
@@ -22,7 +27,7 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
 
     uint16 requestConfirmations = 3;
 
-    uint32 numWords = 3;
+    uint32 numWords = 5;
 
     struct RequestStatus {
         bool fulfilled;
@@ -46,6 +51,10 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
         subscriptionId = _subscriptionId;
     }
 
+    /**
+     * @dev This function is indirectly by Chainlink Automation since Always Alive
+     * smart contract acts as a proxy for it.
+     */
     function requestRandomWords()
         external
         onlyOwner
@@ -69,6 +78,10 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
         return requestId;
     }
 
+    /**
+     * @dev This function will be called by the Chainlink VRF Coordinator. The
+     * generated randomWords are then stored.
+     */
     function fulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords
@@ -77,8 +90,6 @@ contract VRFConsumer is VRFConsumerBaseV2, ConfirmedOwner {
         requests[_requestId].fulfilled = true;
         requests[_requestId].randomWords = _randomWords;
         emit RequestFulfilled(_requestId, _randomWords);
-
-        // Section for paying random kin profit
     }
 
     function getRequestStatus(uint256 _requestId)

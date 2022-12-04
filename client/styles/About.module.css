@@ -1,0 +1,95 @@
+.container {
+  padding: 0 2rem;
+}
+
+.main {
+  min-height: 70vh;
+  padding: 0.5rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  max-height: 20vh;
+  margin-top: 5px;
+  margin-bottom: 0;
+  display: flex;
+  padding: 1rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer {
+  min-height: 10vh;
+  display: flex;
+  flex: 1;
+  padding: 2rem 0;
+  border-top: 1px solid #eaeaea;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.title a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.title a:hover,
+.title a:focus,
+.title a:active {
+  text-decoration: underline;
+}
+
+.title {
+  color: #0070f3;
+  margin: 1;
+  line-height: 1.15;
+  font-size: 4rem;
+}
+
+.title {
+  text-align: center;
+}
+
+.description {
+  display: block;
+  margin: 0 0;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  line-height: 1.5;
+  font-size: 1.5rem;
+  text-align: left;
+}
+
+.dt {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.dd {
+  font-size: 1.2rem;
+}
+
+.li {
+  margin-bottom: 15px;
+}
+
+.link {
+  text-decoration-line: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+  .footer {
+    border-color: #222;
+  }
+}

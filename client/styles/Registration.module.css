@@ -1,19 +1,31 @@
-.input {
-  width: 80%;
-  padding: 12px 20px;
-  margin: 12px 0;
-  display: inline-block;
-  border: 1px solid #0e76fd;
-  box-sizing: border-box;
-  border-radius: 16px;
-}
-
 .h1 {
   display: flex;
   align-items: center;
   justify-content: center;
   color: #0e76fd;
   margin-top: 1%;
+}
+
+.label {
+  display: inline-block;
+  width: 40%;
+  color: #777777;
+}
+
+.input {
+  padding: 10px 20px;
+  border: 1px solid #0e76fd;
+  box-sizing: border-box;
+  margin: 6px 0;
+  border-radius: 16px;
+  width: 60%;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: auto;
 }
 
 .button {
@@ -33,7 +45,10 @@
   font-size: 16px;
 }
 
-.description {
-  font-size: small;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+.li {
+  font-weight: bold;
+}
+
+.ol {
+  margin: 20px 10px;
 }

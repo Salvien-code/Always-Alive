@@ -6,6 +6,13 @@
   margin-top: 1%;
 }
 
+.buttonArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5.5%;
+}
+
 .button {
   background-color: #0e76fd;
   border: none;
@@ -25,4 +32,20 @@
 
 .description {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.li {
+  font-weight: bold;
+  margin: 10px 10px;
+  text-align: justify;
+}
+
+.ol {
+  margin: 20px 10px;
+}
+
+.readData {
+  color: #0e76fd;
+  display: inline;
+  margin-left: 10px;
 }
